@@ -1,0 +1,43 @@
+body {
+  background-image: url("{% static 'core/img/fundo.png' %}"); 
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: center;
+  padding: 0;  
+}
+
+.card {
+  border-radius: 15px; 
+}
+
+.chamadas-table thead {
+  background-color: #58658c;
+  color: #ffffff;
+  position: sticky;
+  top: 56px;  
+  z-index: 1;
+}
+
+.chamadas-table th {
+  width: 150px;
+}
+
+.map-search {
+  position: absolute;
+  top: 20px; 
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 50%;
+  margin: 5px; 
+}
+
+.map-search .input-group {
+  width: 100%;
+}
+
+#osm-iframe {
+  border: 1px solid #ccc !important;
+}

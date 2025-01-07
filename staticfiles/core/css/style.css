@@ -1,0 +1,12 @@
+body {
+    /* ... outros estilos ... */
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh; 
+    justify-content: center; 
+  }
+
+  .card {
+    /* ... outros estilos ... */
+    border-radius: 15px; /* Ajuste o valor para controlar o arredondamento */
+  }

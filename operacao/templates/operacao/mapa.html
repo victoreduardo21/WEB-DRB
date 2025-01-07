@@ -1,0 +1,57 @@
+{% extends 'core/base_operacao.html' %}
+
+{% block title %}Mapa{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card">
+          <div class="map-search">
+            <div class="input-group">
+              <input type="text" id="map-search-input" class="form-control" placeholder="Pesquisar no mapa...">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="map" style="height: 500px; width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initMap() {
+    var map = L.map('map').setView([-23.9608, -46.3883], 10);  // Coordenadas centrais de São Vicente, SP
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Dados dos terminais
+    var terminais = {{ terminais_json|safe }};
+    
+    terminais.forEach(function(terminal) {
+      var marker = L.marker([terminal.latitude, terminal.longitude]).addTo(map);
+      marker.bindPopup(`<b>${terminal.nome}</b><br>${terminal.endereco}`).openPopup();
+
+      // Adicionar círculo com o raio
+      if (terminal.raio > 0) {  // Verificar se o raio é maior que zero
+        var circle = L.circle([terminal.latitude, terminal.longitude], {
+          color: 'blue',  // Cor da borda do círculo
+          fillColor: '#87CEEB',  // Cor do preenchimento do círculo
+          fillOpacity: 0.5,
+          radius: terminal.raio * 1000  // Converter raio de km para metros
+        }).addTo(map);
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initMap);
+</script>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'core/base_financeiro.html' %}
+
+{% block title %}Cadastrar Usuário - Financeiro{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <!-- Botão para abrir o formulário de cadastro -->
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" onclick="toggleCadastro()">
+            Cadastrar Novo Usuário
+        </button>
+    </div>
+
+    <!-- Tabela de Usuários -->
+    <div class="mb-3">
+        <h3 class="text-center">Usuários Cadastrados</h3>
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Setor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.nome }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.telefone }}</td>
+                            <td>{{ usuario.setor }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" onclick="editarUsuario({{ usuario.id }})">
+                                    Editar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Formulário de Cadastro de Usuário -->
+    <div id="formCadastroCard" class="card w-100" style="display: none;">
+        <div class="card-body">
+            <h3 class="card-title">Cadastrar Novo Usuário</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="nome">Nome:</label>
+                        <input type="text" class="form-control form-control-sm" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control form-control-sm" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="senha">Senha:</label>
+                        <input type="password" class="form-control form-control-sm" id="senha" name="senha" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="telefone">Telefone:</label>
+                        <input type="text" class="form-control form-control-sm" id="telefone" name="telefone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="setor">Setor:</label>
+                    <select class="form-control form-control-sm" id="setor" name="setor" required>
+                        <option value="" disabled selected>Selecione o setor</option>
+                        <option value="Operação">Operação</option>
+                        <option value="Administração">Administração</option>
+                        <option value="Financeiro">Financeiro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+            </form>
+            {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCadastro() {
+        const formCard = document.getElementById('formCadastroCard');
+        formCard.style.display = formCard.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function editarUsuario(id) {
+        alert('Funcionalidade de edição de usuário ainda não implementada. ID do usuário: ' + id);
+        // Aqui podes adicionar a lógica para abrir um formulário de edição com os dados do usuário.
+    }
+</script>
+{% endblock %}
