@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-tcqb(=9jd_)^zl8rt2vei*cmt%w)jtp*5%3lm*-^9=e7h83kk-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  "*"
+]
 
 
 # Application definition
@@ -42,9 +44,11 @@ INSTALLED_APPS = [
     'operacao',
     'api',
     'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+   'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,7 +59,27 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
+]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+  "*"
+]
+
+CORS_EXPOSE_HEADERS = [
+  "*"
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
 ]
 
 ROOT_URLCONF = 'drb_logistica_backend.urls'
