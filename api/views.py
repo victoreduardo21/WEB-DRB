@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
-from .config import get_db  # Importar a função para conectar ao MongoDB
+
+from core.google.worksheets import get_motoristas
 import json
 
 
@@ -13,13 +14,10 @@ def login_motorista(request):
         placa = data.get("placa")
         cpf = data.get("cpf")
 
-        db = get_db()  # Obtém a conexão com o banco de dados
-        cadastro_motorista_collection = db["Cadastro_motorista"]  # Acessa a coleção
-        user = cadastro_motorista_collection.find_one(
-            {"placa": placa, "cpf": cpf}
-        )  # Busca pela placa e CPF
+        motoristas = get_motoristas()
+        motorista = motoristas.buscar_motorista(cpf, placa)
 
-        if user:  # Verifica se o usuário foi encontrado
+        if motorista:
             return JsonResponse({"status": "sucesso", "dados": {}}, status=200)
         else:
             return JsonResponse(
