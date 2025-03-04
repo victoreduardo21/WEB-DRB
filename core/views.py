@@ -1,79 +1,8 @@
-import os
-import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
-from django.views.decorators.csrf import csrf_exempt
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from rest_framework.decorators import api_view
-from .config import get_db  # Importar função para conectar ao MongoDB
-
-# IDs e intervalos das planilhas
-SPREADSHEET_ID_CADASTRO = "1JWO418p5HMf3cfKBWkalTD_MDPf3P5utXQqiCJXWR6M"
-RANGE_CADASTRO = "Cadastro_motorista!A1:Z1000"
-
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-
-
-def get_service():
-    creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-    try:
-        service = build("sheets", "v4", credentials=creds)
-        print("Serviço Google Sheets autenticado com sucesso.")
-        return service
-    except HttpError as err:
-        print(f"Erro ao acessar o Google Sheets: {err}")
-        return None
-
-
-def import_planilha_to_db():
-    service = get_service()
-    if not service:
-        print("Erro ao autenticar com Google Sheets")
-        return
-
-    # Importar dados de cadastro
-    sheet = service.spreadsheets()
-    result = (
-        sheet.values()
-        .get(spreadsheetId=SPREADSHEET_ID_CADASTRO, range=RANGE_CADASTRO)
-        .execute()
-    )
-    values = result.get("values", [])
-
-    print(f"Dados de Cadastro: {values}")
-
-    if values:
-        for row in values:
-            print(f"Importando Cadastro: {row}")
-            CadastroMotorista.objects.update_or_create(
-                placa=row[4],  # Supondo que `placa` está na coluna 4
-                defaults={"cpf": row[2]},  # Supondo que `cpf` está na coluna 2
-            )
-
-
-@csrf_exempt
-def update_data(request):
-    try:
-        import_planilha_to_db()
-        return JsonResponse({"status": "sucesso"})
-    except Exception as e:
-        print(f"Erro: {e}")
-        return JsonResponse({"status": "erro", "mensagem": str(e)}, status=500)
+from .config import get_db
 
 
 # View de Login
