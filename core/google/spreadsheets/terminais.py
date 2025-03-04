@@ -1,7 +1,8 @@
 from gspread import Spreadsheet
 from typing import List
-from models.terminal import Terminal
 import re
+
+from operacao.models import Terminal
 
 
 class PlanilhaTerminais:

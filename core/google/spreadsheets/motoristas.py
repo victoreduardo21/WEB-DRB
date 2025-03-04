@@ -1,7 +1,8 @@
 from gspread import Spreadsheet
 from typing import List, Optional
-from models.motorista import Motorista
 import re
+
+from api.models import Motorista
 
 
 class PlanilhaMotoristas:

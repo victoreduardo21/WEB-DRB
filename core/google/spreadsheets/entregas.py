@@ -1,6 +1,7 @@
 from typing import List, Optional
 from gspread import Spreadsheet
-from models.entrega import Entrega
+
+from core.google.models.entrega import Entrega
 
 
 class PlanilhaEntregas:
