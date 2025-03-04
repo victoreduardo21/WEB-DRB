@@ -2,7 +2,7 @@ from gspread import Spreadsheet
 from typing import List, Optional
 import re
 
-from api.models import Motorista
+from core.google.models.motorista import Motorista
 
 
 class PlanilhaMotoristas:
