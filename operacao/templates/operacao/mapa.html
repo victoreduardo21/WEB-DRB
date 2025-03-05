@@ -35,14 +35,20 @@
 
     // Dados dos terminais
     var terminais = {{ terminais_json|safe }};
-    
+
     terminais.forEach(function(terminal) {
-      var marker = L.marker([terminal.latitude, terminal.longitude]).addTo(map);
+      const [latitude, longitude] = terminal.entrada;
+
+      if (!latitude || !longitude) {
+        return;
+      }
+
+      var marker = L.marker(terminal.entrada).addTo(map);
       marker.bindPopup(`<b>${terminal.nome}</b><br>${terminal.endereco}`).openPopup();
 
       // Adicionar círculo com o raio
       if (terminal.raio > 0) {  // Verificar se o raio é maior que zero
-        var circle = L.circle([terminal.latitude, terminal.longitude], {
+        var circle = L.circle(terminal.entrada, {
           color: 'blue',  // Cor da borda do círculo
           fillColor: '#87CEEB',  // Cor do preenchimento do círculo
           fillOpacity: 0.5,
