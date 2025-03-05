@@ -2,7 +2,7 @@ from gspread import Spreadsheet
 from typing import List
 import re
 
-from operacao.models import Terminal
+from core.google.models.terminal import Terminal
 
 
 class PlanilhaTerminais:
