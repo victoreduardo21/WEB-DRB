@@ -35,6 +35,11 @@ class Terminal:
         except (ValueError, TypeError):
             id_terminal = None
 
+        try:
+            raio = float(data.get("RAIO", 0))
+        except (ValueError, TypeError):
+            raio = 0
+
         return cls(
             id=id_terminal,
             nome=str(data.get("TERMINAL", "")).strip(),
@@ -42,7 +47,7 @@ class Terminal:
             endereco=str(data.get("ENDEREÇO", "")).strip(),
             cnpj=str(data.get("CNPJ", "")).strip(),
             cid_rota=str(data.get("CID_ROTA", "")).strip(),
-            raio=float(data.get("RAIO", 0)),
+            raio=raio,
             entrada=parse_geopoint(data.get("ENTRADA", "0, 0")),
             saida=parse_geopoint(data.get("SAIDA", "0, 0")),
         )
@@ -56,12 +61,8 @@ class Terminal:
             "cnpj": self.cnpj,
             "cid_rota": self.cid_rota,
             "raio": self.raio,
-            "entrada": f"{self.entrada[0]}, {self.entrada[1]}",
-            "saida": (
-                f"{self.saida[0]}, {self.saida[1]}"
-                if self.saida[0] and self.saida[1]
-                else None
-            ),
+            "entrada": (self.entrada[0], self.entrada[1]) if self.entrada else None,
+            "saida": (self.saida[0], self.saida[1]) if self.saida else None,
         }
 
     def __str__(self):
