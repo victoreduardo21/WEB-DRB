@@ -20,5 +20,15 @@ class Motorista:
             carreta=str(data.get("CARRETA", "")),
         )
 
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "cpf": self.cpf,
+            "cnh": self.cnh,
+            "cavalo": self.cavalo,
+            "carreta": self.carreta,
+        }
+
     def __str__(self):
         return f"Motorista(id={self.id}, nome={self.nome}, cpf={self.cpf}, cnh={self.cnh}, cavalo={self.cavalo}, carreta={self.carreta})"

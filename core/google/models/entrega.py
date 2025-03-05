@@ -32,6 +32,18 @@ class Entrega:
             janela=str(data.get("JANELA", "")).strip(),
         )
 
+    def to_dict(self) -> dict:
+        return {
+            "id_motorista": self.id_motorista,
+            "container": self.container,
+            "motorista": self.motorista,
+            "cpf": self.cpf,
+            "cnh": self.cnh,
+            "cavalo": self.cavalo,
+            "carreta": self.carreta,
+            "janela": self.janela,
+        }
+
     def __str__(self):
         return (
             f"Entrega(id_motorista={self.id_motorista}, container={self.container}, "

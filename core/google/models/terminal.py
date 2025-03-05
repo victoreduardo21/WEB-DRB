@@ -44,5 +44,21 @@ class Terminal:
             saida=parse_geopoint(data.get("SAIDA", "0, 0")),
         )
 
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "cidade": self.cidade,
+            "endereco": self.endereco,
+            "cnpj": self.cnpj,
+            "cid_rota": self.cid_rota,
+            "entrada": f"{self.entrada[0]}, {self.entrada[1]}",
+            "saida": (
+                f"{self.saida[0]}, {self.saida[1]}"
+                if self.saida[0] and self.saida[1]
+                else None
+            ),
+        }
+
     def __str__(self):
         return f"Terminal(id={self.id}, nome={self.nome}, cidade={self.cidade}, endereco={self.endereco}, cnpj={self.cnpj}, cid_rota={self.cid_rota}, entrada={self.entrada}, saida={self.saida})"
