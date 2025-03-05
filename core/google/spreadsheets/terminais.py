@@ -26,7 +26,18 @@ class PlanilhaTerminais:
         dados = self.worksheet.get_all_records()
         if not dados:
             return 1
-        ids = [int(terminal.get("ID_TERMINAL", 0)) for terminal in dados]
+
+        ids = []
+        for terminal in dados:
+            id_terminal = terminal.get("ID_TERMINAL", "")
+            # Verifica se o campo não está vazio e pode ser convertido para int
+            if id_terminal and str(id_terminal).strip().isdigit():
+                ids.append(int(id_terminal))
+
+        # Se nenhum ID válido for encontrado, retorna 1
+        if not ids:
+            return 1
+
         return max(ids) + 1
 
     def _limpar_cnpj(self, cnpj: str) -> str:
@@ -63,10 +74,11 @@ class PlanilhaTerminais:
         """
         cnpj_limpo = self._limpar_cnpj(cnpj)
         dados = self.worksheet.get_all_records()
+
         return [
             Terminal.from_dict(terminal)
             for terminal in dados
-            if self._limpar_cnpj(terminal.get("CNPJ", "")) == cnpj_limpo
+            if self._limpar_cnpj(str(terminal.get("CNPJ", ""))) == cnpj_limpo
         ]
 
     def cadastrar_terminal(self, terminal: Terminal) -> None:
@@ -86,7 +98,9 @@ class PlanilhaTerminais:
             terminal.endereco,
             terminal.cnpj,
             terminal.cid_rota,
-            f"{terminal.entrada[0]}, {terminal.entrada[1]}",
-            f"{terminal.saida[0]}, {terminal.saida[1]}",
+            terminal.raio,
+            f"{terminal.entrada[0]}, {terminal.entrada[1]}" if terminal.entrada else "",
+            f"{terminal.saida[0]}, {terminal.saida[1]}" if terminal.saida else "",
         ]
+
         self.worksheet.append_row(nova_linha)
