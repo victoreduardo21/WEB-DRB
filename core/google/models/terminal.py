@@ -7,6 +7,7 @@ class Terminal:
         endereco: str,
         cnpj: str,
         cid_rota: str,
+        raio: float,
         entrada: tuple[float, float],
         saida: tuple[float | None, float | None],
     ):
@@ -16,6 +17,7 @@ class Terminal:
         self.endereco = endereco
         self.cnpj = cnpj
         self.cid_rota = cid_rota
+        self.raio = raio
         self.entrada = entrada
         self.saida = saida
 
@@ -40,6 +42,7 @@ class Terminal:
             endereco=str(data.get("ENDEREÇO", "")).strip(),
             cnpj=str(data.get("CNPJ", "")).strip(),
             cid_rota=str(data.get("CID_ROTA", "")).strip(),
+            raio=float(data.get("RAIO", 0)),
             entrada=parse_geopoint(data.get("ENTRADA", "0, 0")),
             saida=parse_geopoint(data.get("SAIDA", "0, 0")),
         )
@@ -52,6 +55,7 @@ class Terminal:
             "endereco": self.endereco,
             "cnpj": self.cnpj,
             "cid_rota": self.cid_rota,
+            "raio": self.raio,
             "entrada": f"{self.entrada[0]}, {self.entrada[1]}",
             "saida": (
                 f"{self.saida[0]}, {self.saida[1]}"
@@ -61,4 +65,4 @@ class Terminal:
         }
 
     def __str__(self):
-        return f"Terminal(id={self.id}, nome={self.nome}, cidade={self.cidade}, endereco={self.endereco}, cnpj={self.cnpj}, cid_rota={self.cid_rota}, entrada={self.entrada}, saida={self.saida})"
+        return f"Terminal(id={self.id}, nome={self.nome}, cidade={self.cidade}, endereco={self.endereco}, cnpj={self.cnpj}, cid_rota={self.cid_rota}, raio={self.raio}, entrada={self.entrada}, saida={self.saida})"
