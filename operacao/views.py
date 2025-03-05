@@ -4,6 +4,8 @@ from core.config import get_db  # Função de conexão ao MongoDB
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
+from core.google.worksheets import get_terminais
+
 
 def chamadas_operacao(request):
     user_nome = request.session.get(
@@ -39,29 +41,19 @@ def chamadas_operacao(request):
 
 
 def mapa(request):
-    db = get_db()
-    terminais_collection = db["Cadastro_Terminal"]
+    planilha_terminais = get_terminais()
+    terminais = planilha_terminais.buscar_todos_terminais()
 
-    terminais = list(terminais_collection.find({}))
+    terminais_dict = [terminal.to_dict() for terminal in terminais]
+    context = {"terminais_json": json.dumps(terminais_dict, cls=DjangoJSONEncoder)}
 
-    # Converter ObjectId para string
-    for terminal in terminais:
-        terminal["_id"] = str(terminal["_id"])
-        terminal["latitude"] = float(terminal["latitude"])
-        terminal["longitude"] = float(terminal["longitude"])
-        terminal["raio"] = float(
-            terminal.get("raio", 0)
-        )  # Garantir que o raio é um float e default 0
-
-    terminais_json = json.dumps(terminais, cls=DjangoJSONEncoder)
-
-    context = {"terminais_json": terminais_json}
     return render(request, "operacao/mapa.html", context)
 
 
 def cadastrar(request):
-    db = get_db()
-    terminais_collection = db["Cadastro_Terminal"]
+    planilha_terminais = get_terminais()
+    terminais = planilha_terminais.buscar_todos_terminais()
+    terminais_dict = [terminal.to_dict() for terminal in terminais]
 
     if request.method == "POST":
         nome = request.POST.get("nome")
@@ -73,11 +65,12 @@ def cadastrar(request):
         latitude = request.POST.get("latitude")
         longitude = request.POST.get("longitude")
 
-        # Verificar duplicação (por exemplo, mesmo CNPJ)
-        if terminais_collection.find_one({"cnpj": cnpj}):
+        terminais_existentes = planilha_terminais.buscar_terminais_por_cnpj(cnpj)
+
+        if len(terminais_existentes) > 0:
             messages.error(request, "Já existe um terminal cadastrado com este CNPJ.")
         else:
-            terminais_collection.insert_one(
+            planilha_terminais.cadastrar_terminal(
                 {
                     "nome": nome,
                     "cidade": cidade,
@@ -93,5 +86,5 @@ def cadastrar(request):
 
         return redirect("operacao:cadastrar")
 
-    terminais = list(terminais_collection.find({}))
-    return render(request, "operacao/cadastrar.html", {"terminais": terminais})
+    context = {"terminais": terminais_dict}
+    return render(request, "operacao/cadastrar.html", context)
