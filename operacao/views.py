@@ -4,6 +4,7 @@ from core.config import get_db  # Função de conexão ao MongoDB
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
+from core.google.models.terminal import Terminal
 from core.google.worksheets import get_terminais
 
 
@@ -70,18 +71,19 @@ def cadastrar(request):
         if len(terminais_existentes) > 0:
             messages.error(request, "Já existe um terminal cadastrado com este CNPJ.")
         else:
-            planilha_terminais.cadastrar_terminal(
-                {
-                    "nome": nome,
-                    "cidade": cidade,
-                    "endereco": endereco,
-                    "cnpj": cnpj,
-                    "cid_rota": cid_rota,
-                    "raio": float(raio) if raio else 0,
-                    "latitude": float(latitude),
-                    "longitude": float(longitude),
-                }
+            novo_terminal = Terminal(
+                id=None,
+                nome=nome,
+                cidade=cidade,
+                endereco=endereco,
+                cnpj=cnpj,
+                cid_rota=cid_rota,
+                raio=float(raio) if raio else 0,
+                entrada=(float(latitude), float(longitude)),
+                saida=(0, 0),
             )
+
+            planilha_terminais.cadastrar_terminal(novo_terminal)
             messages.success(request, "Terminal cadastrado com sucesso.")
 
         return redirect("operacao:cadastrar")
